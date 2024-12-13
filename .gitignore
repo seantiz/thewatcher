@@ -1,2 +1,4 @@
 *.txt
 *.exe
+.DS_Store
+netstat/.DS_Store

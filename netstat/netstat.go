@@ -6,18 +6,18 @@ import (
 )
 
 var skStates = [...]string{
-    "UNKNOWN",
-    "ESTABLISHED",
-    "SYN_SENT",
-    "SYN_RECV",
-    "FIN_WAIT1",
-    "FIN_WAIT2",
-    "TIME_WAIT",
-    "", // CLOSE
-    "CLOSE_WAIT",
-    "LAST_ACK",
-    "LISTEN",
-    "CLOSING",
+	"UNKNOWN",
+	"ESTABLISHED",
+	"SYN_SENT",
+	"SYN_RECV",
+	"FIN_WAIT1",
+	"FIN_WAIT2",
+	"TIME_WAIT",
+	"", // CLOSE
+	"CLOSE_WAIT",
+	"LAST_ACK",
+	"LISTEN",
+	"CLOSING",
 }
 
 // SockAddr represents an ip:port pair
@@ -65,17 +65,17 @@ type AcceptFn func(*SockTabEntry) bool
 func NoopFilter(*SockTabEntry) bool { return true }
 
 func TCPSocks(accept AcceptFn) ([]SockTabEntry, error) {
-    return OsTCPSocks(accept)
+	return OsTCPSocks(accept)
 }
 
 func TCP6Socks(accept AcceptFn) ([]SockTabEntry, error) {
-    return OsTCP6Socks(accept)
+	return OsTCP6Socks(accept)
 }
 
 func UDPSocks(accept AcceptFn) ([]SockTabEntry, error) {
-    return OsUDPSocks(accept)
+	return OsUDPSocks(accept)
 }
 
 func UDP6Socks(accept AcceptFn) ([]SockTabEntry, error) {
-    return OsUDP6Socks(accept)
+	return OsUDP6Socks(accept)
 }
