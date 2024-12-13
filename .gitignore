@@ -2,3 +2,7 @@
 *.exe
 .DS_Store
 netstat/.DS_Store
+thewatcher
+thewatcherOSX
+thewatcher_linuxAMD64
+thewatcher_linuxARM64
