@@ -1,4 +1,4 @@
-//lint:file-ignore U1000 Ignore all unused code
+//lint:file-ignore U1000 Ignore all unused code and callbacks
 package netstat
 
 import (
