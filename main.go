@@ -11,9 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	"thewatcher/cli"
 	"thewatcher/netstat"
-
-	"github.com/manifoldco/promptui"
 )
 
 var (
@@ -33,32 +32,32 @@ const (
 	protoIPv6 = 0x02
 )
 
-func chooseInterval() (string, error) {
-	options := []string{
-		"Every minute - INTENSE logging",
-		"Every 15 minutes",
-		"Every 30 minutes",
-		"Every hour",
-	}
+func printHelp() {
+	fmt.Println()
+	fmt.Println("You can use these flags when running the program:")
+	fmt.Println()
+	flags := make([][2]string, 0)
+	flag.VisitAll(func(f *flag.Flag) {
+		flags = append(flags, [2]string{
+			fmt.Sprintf("-%s", f.Name),
+			f.Usage,
+		})
+	})
 
-	prompt := promptui.Select{
-		Label: "Please choose how regularly you'd like to capture open network connections:",
-		Items: options,
+	for _, f := range flags {
+		fmt.Printf("  %-15s %s\n", f[0], f[1])
 	}
+	fmt.Println()
+}
 
-	_, result, err := prompt.Run()
-	if err != nil {
-		return "", err
-	}
-
-	return result, nil
+func init() {
+	flag.Usage = printHelp
 }
 
 func main() {
 	flag.Parse()
 
 	if *help {
-		fmt.Println("Welcome to The Watcher! Here's how you can use it:")
 		flag.Usage()
 		os.Exit(0)
 	}
@@ -89,10 +88,16 @@ func main() {
 		time.Sleep(500 * time.Millisecond)
 	}
 
-	interval, err := chooseInterval()
+	interval, err := cli.ChooseInterval()
 	if err != nil {
-		fmt.Printf("Unexpected error: %v\n", err)
-		return
+		switch err := err.(type) {
+		case cli.InterruptError:
+			fmt.Println("\n👋 You closed the program. See you next time.")
+			os.Exit(0)
+		default:
+			fmt.Printf("Unexpected error: %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	var duration time.Duration
@@ -110,11 +115,9 @@ func main() {
 	fmt.Println("Watcher ACTIVATED.")
 	time.Sleep(4000 * time.Millisecond)
 
-	// Set up channel to listen for interrupt signals
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	// Main loop to keep the program running
 	go func() {
 		for {
 			buffer := &bytes.Buffer{}
@@ -122,7 +125,7 @@ func main() {
 			fmt.Fprintf(buffer, "Proto %-23s %-23s %-12s %-16s\n",
 				"Local Addr", "Foreign Addr", "State", "PID/Program name")
 
-			// Socket filtering function
+			// Socket filtering
 			var fn netstat.AcceptFn
 			switch {
 			case *all:
@@ -133,7 +136,7 @@ func main() {
 				fn = func(s *netstat.SockTabEntry) bool { return s.State != netstat.Listen }
 			}
 
-			// Capture TCP sockets
+			// Socket capture (TCP/UDP)
 			if *tcp || !*udp {
 				if proto&protoIPv4 == protoIPv4 {
 					tabs, err := netstat.TCPSocks(fn)
@@ -149,7 +152,6 @@ func main() {
 				}
 			}
 
-			// Capture UDP sockets
 			if *udp {
 				if proto&protoIPv4 == protoIPv4 {
 					tabs, err := netstat.UDPSocks(netstat.NoopFilter)
@@ -165,7 +167,6 @@ func main() {
 				}
 			}
 
-			// Write buffer to file
 			if _, err := logFile.Write(buffer.Bytes()); err != nil {
 				fmt.Printf("Failed to write to log file: %v\n", err)
 				return
@@ -173,7 +174,6 @@ func main() {
 
 			fmt.Printf("✅ The Watcher successfully captured the current connections at %s.\n", time.Now().Format("3.04 PM"))
 			time.Sleep(7000 * time.Millisecond)
-
 			if runtime.GOOS != "windows" {
 				fmt.Println("👀 The Watcher is active. Press Ctrl+C anytime to stop.\033[?25h") // Show cursor
 			} else {
@@ -184,9 +184,8 @@ func main() {
 		}
 	}()
 
-	// Wait for interrupt signal
 	<-sigs
-	fmt.Println("\n👋 The Watcher is shutting down. Goodbye!")
+	fmt.Println("\n👋 The Watcher is shutting down. See you next time.")
 }
 
 func displaySockInfo(proto string, s []netstat.SockTabEntry, buffer *bytes.Buffer) {

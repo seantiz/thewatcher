@@ -107,7 +107,8 @@ func parseUDP(version uint8) ([]SockTabEntry, error) {
 	return entries, nil
 }
 
-func parseXinpcb64(inp *Xinpcb64, transport int, ipVersion uint8, xig *XTCPcb64) SockTabEntry {
+// parseXinpcb64 callback will set a transport number
+func parseXinpcb64(inp *Xinpcb64, _ int, ipVersion uint8, xig *XTCPcb64) SockTabEntry {
 	var result SockTabEntry
 
 	lport := ntohs(inp.Inp_lport)

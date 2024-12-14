@@ -250,7 +250,7 @@ func rawGetTCPTable2(proc uintptr, tab unsafe.Pointer, size *uint32, order bool)
 	return nil
 }
 
-func getTCPTable2(proc uintptr, order bool) ([]byte, error) {
+func getTCPTable2(proc uintptr, _ bool) ([]byte, error) {
 	var (
 		size uint32
 		buf  []byte
