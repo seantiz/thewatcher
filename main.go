@@ -24,7 +24,7 @@ var (
 	ipv4      = flag.Bool("4", false, "display only IPv4 sockets")
 	ipv6      = flag.Bool("6", false, "display only IPv6 sockets")
 	help      = flag.Bool("help", false, "display this help screen")
-	logPath   = flag.String("saveto", "watcher.txt", "path to the log file")
+	logPath   = flag.String("saveto", "capturedlogs.txt", "path to the log file")
 )
 
 const (
