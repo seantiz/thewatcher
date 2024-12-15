@@ -14,11 +14,11 @@ xattr -d com.apple.quarantine ~/Downloads/thewatcher
 
 Download and run the right program for your operating system:
 
-Windows: [Download here](./bin/thewatcher.exe)
-MacOS Silicon: [Download here](./bin/thewatcher)
-MacOS Intel: [Download here](./bin/thewatcherOSX)
-Linux AMD64: [Download here](./bin/thewatcher_linuxAMD64)
-Linux ARM64: [Download here](./bin/thewatcher_linuxARM64)
+- Windows: [Download here](./bin/thewatcher.exe)
+- MacOS Silicon: [Download here](./bin/thewatcher)
+- MacOS Intel: [Download here](./bin/thewatcherOSX)
+- Linux AMD64: [Download here](./bin/thewatcher_linuxAMD64)
+- Linux ARM64: [Download here](./bin/thewatcher_linuxARM64)
 
 ## go-netstat
 
