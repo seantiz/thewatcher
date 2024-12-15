@@ -1,5 +1,4 @@
 *.txt
 .DS_Store
 netstat/.DS_Store
-cli/*
 .vscode/*
