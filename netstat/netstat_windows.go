@@ -423,7 +423,7 @@ func Process32First(handle syscall.Handle, pe *Processentry32) error {
 // recorded in a system snapshot
 func Process32Next(handle syscall.Handle, pe *Processentry32) error {
 	pe.Size = uint32(unsafe.Sizeof(*pe))
-	r1, _, callErr := syscall.Syscall(
+	r1, _, callErr := syscall.SyscallN(
 		procProcess32Next.Addr(),
 		uintptr(2),
 		uintptr(handle),
